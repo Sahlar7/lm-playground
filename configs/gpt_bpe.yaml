@@ -1,0 +1,17 @@
+# Same model, trained on our own BPE tokenizer instead of GPT-2's.
+name: gpt_bpe
+
+tokenizer: bpe
+bpe_vocab_size: 4000
+
+model:
+  d_model: 512
+  n_heads: 8
+  n_layers: 6
+  max_seq_len: 128
+
+training:
+  batch_size: 64
+  lr: 1.0e-4
+  n_epochs: 15
+  num_workers: 4

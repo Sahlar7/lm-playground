@@ -1,0 +1,19 @@
+# Baseline ToyGPT on wikitext-2 with the GPT-2 tokenizer.
+# Copy this file to start a new experiment; only override what you change.
+name: gpt_baseline
+
+tokenizer: gpt2        # "gpt2" (pretrained) or "bpe" (ours)
+bpe_vocab_size: 4000   # only used when tokenizer: bpe
+
+model:
+  d_model: 512
+  n_heads: 8
+  n_layers: 6
+  max_seq_len: 128
+  # vocab_size is filled in from the tokenizer
+
+training:
+  batch_size: 64
+  lr: 1.0e-4
+  n_epochs: 15         # val loss bottomed out ~epoch 13 in the first run
+  num_workers: 4

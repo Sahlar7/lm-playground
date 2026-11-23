@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toygpt"
+version = "0.1.0"
+description = "From-scratch language model playground"
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+    "transformers",
+    "datasets",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+notebook = ["jupyter", "ipykernel"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
