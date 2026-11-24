@@ -12,10 +12,12 @@ dependencies = [
     "transformers",
     "datasets",
     "pyyaml",
+    "regex",
 ]
 
 [project.optional-dependencies]
 notebook = ["jupyter", "ipykernel"]
+dev = ["pytest"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -19,7 +19,7 @@ from toygpt.training import train
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
-def build_tokenizer(raw, train_corpus):
+def build_tokenizer(raw, train_corpus, out_dir):
     kind = raw.get("tokenizer", "gpt2")
     if kind == "gpt2":
         from transformers import GPT2Tokenizer
@@ -28,6 +28,7 @@ def build_tokenizer(raw, train_corpus):
     if kind == "bpe":
         tok = BPETokenizer(vocab_size=raw.get("bpe_vocab_size", 4000))
         tok.train(train_corpus)
+        tok.save(Path(out_dir) / "tokenizer.json")  # reload later with BPETokenizer.load(...)
         return tok, len(tok.vocab)
     raise ValueError(f"unknown tokenizer: {kind}")
 
@@ -45,7 +46,7 @@ def main():
     print(f"run: {run_name}  device: {device}")
 
     train_corpus, val_corpus = load_wikitext()
-    tokenizer, vocab_size = build_tokenizer(raw, train_corpus)
+    tokenizer, vocab_size = build_tokenizer(raw, train_corpus, train_cfg.out_dir)
     model_cfg.vocab_size = vocab_size
 
     save_config(train_cfg.out_dir, model=model_cfg, training=train_cfg,

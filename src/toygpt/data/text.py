@@ -24,7 +24,7 @@ class TextDataset(Dataset):
 
 def load_wikitext(name="wikitext-2-raw-v1"):
     from datasets import load_dataset
-    raw_dataset = load_dataset("wikitext", name)
+    raw_dataset = load_dataset("Salesforce/wikitext", name)
     return raw_dataset["train"]["text"], raw_dataset["validation"]["text"]
 
 
