@@ -14,6 +14,9 @@ class GPTConfig:
     d_head:      int = 64
     n_layers:    int = 6
     max_seq_len: int = 128
+    tie_weights: bool = False # whether to tie the weights of the embedding and the final linear layer
+    gpt2_init: bool = False # whether to use gpt2 initialization for the weights, or just use pytorch default initialization
+    dropout:    float = 0.1
 
 '''
 Note:
@@ -35,6 +38,23 @@ class ToyGPT(nn.Module):
     self.blocks = nn.ModuleList([TransformerBlock(config) for _ in range(config.n_layers)])
     self.norm = nn.LayerNorm(config.d_model)
     self.head = nn.Linear(config.d_model, config.vocab_size, bias=False)
+        
+    if self.config.tie_weights:
+      self.head.weight = self.token_emb.weight
+
+    if self.config.gpt2_init:
+      self.init_weights()
+      resid_std = 0.02 / (2 * config.n_layers) ** 0.5
+      for block in self.blocks:
+        nn.init.normal_(block.attn.proj.weight, mean=0.0, std=resid_std)
+        nn.init.normal_(block.ffn.net[3].weight, mean=0.0, std=resid_std)
+
+  def init_weights(self):
+    for name, param in self.named_parameters():
+      if 'weight' in name:
+        nn.init.normal_(param, mean=0.0, std=0.02) #this is the weight distribution gpt 2 uses
+      elif 'bias' in name:
+         nn.init.zeros_(param) # this is the bias distribution gpt 2 uses
 
 
 

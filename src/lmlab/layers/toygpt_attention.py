@@ -28,7 +28,7 @@ class AttentionHead(nn.Module):
     self.wv = nn.Linear(config.d_model, self.dk, bias=False)
 
     self.register_buffer('mask', torch.tril(torch.ones(config.max_seq_len, config.max_seq_len))) #mask init, will set to 0's
-    self.dropout = nn.Dropout(0.1)#prevent memorizing train set
+    self.dropout = nn.Dropout(config.dropout)#prevent memorizing train set
     #(created here rather than in forward() so model.eval() can actually switch it off)
 
 
