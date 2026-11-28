@@ -1,5 +1,6 @@
-"""Reusable transformer building blocks. Add new variants (RoPE, RMSNorm, SwiGLU...) here
-alongside the originals, and select them via GPTConfig."""
+"""ToyGPT attention: a single causal self-attention head, and multi-head attention that runs several
+heads in parallel, concatenates them and mixes them with an output projection (W_O).
+Expects a config with d_model, n_heads, max_seq_len (e.g. GPTConfig)."""
 import torch
 from torch import nn
 
@@ -129,34 +130,3 @@ class MultiHeadAttention(nn.Module):
     #just return our concatenated output of attention. However, this would just be attention head 1, followed by head 2, head 3, and so on
     #for each token, which doesn't mix what each head learned at all. The idea of this projection layer W_O is that we can learn how to
     #combine each of our attention head outputs.
-
-class FeedForward(nn.Module):
-  def __init__(self, config):
-    super().__init__()
-    self.net = nn.Sequential(
-        nn.Linear(config.d_model, 4*config.d_model),
-        nn.ReLU(),
-        nn.Dropout(0.1),
-        nn.Linear(4*config.d_model, config.d_model),
-        nn.Dropout(0.1)
-    )
-    #ffn in a transformer generally follows a 2 (input, hidden, output) layer narrow -> wide -> narrow structure. We don't change the dimension of our vector in terms of
-    #input to output, but expanding in the middle lets us discover some more complex patterns, and then in the end go into our original space
-
-  def forward(self, x):
-    return self.net(x) #just pass x, which will just be original sequence x + our output tensor
-    #from multihead self attention, through the neural net
-
-class TransformerBlock(nn.Module):
-  def __init__(self, config):
-    super().__init__()
-    self.norm1 = nn.LayerNorm(config.d_model)
-    self.attn = MultiHeadAttention(config)
-    self.norm2 = nn.LayerNorm(config.d_model)
-    self.ffn = FeedForward(config)
-
-  def forward(self, x): #transformer block pass through. All the things we compute during attention and ffn which are basically transformations
-  #and operations applied to our original x to learn some information are just added to our original sequence
-    x = x + self.attn(self.norm1(x)) #calling the model like this auto calls the forward function
-    x = x + self.ffn(self.norm2(x))
-    return x

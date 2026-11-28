@@ -1,19 +1,19 @@
-"""Load experiment configs (YAML) into the dataclasses, and save them next to checkpoints."""
+"""Load experiment configs (YAML) into the dataclasses, and save them next to checkpoints.
+Model-agnostic: the caller passes the model's config dataclass (e.g. lmlab.models.toygpt.GPTConfig)."""
 from dataclasses import asdict
 from pathlib import Path
 
 import yaml
 
-from toygpt.models.gpt import GPTConfig
-from toygpt.training.trainer import TrainingConfig
+from lmlab.training.trainer import TrainingConfig
 
 
-def load_config(path):
-    """Returns (raw_dict, GPTConfig, TrainingConfig). Missing keys fall back to dataclass defaults;
+def load_config(path, model_config_cls):
+    """Returns (raw_dict, model_config, TrainingConfig). Missing keys fall back to dataclass defaults;
     unknown keys raise a TypeError so typos don't silently do nothing."""
     with open(path, encoding="utf-8") as f:
         raw = yaml.safe_load(f) or {}
-    model_cfg = GPTConfig(**raw.get("model", {}))
+    model_cfg = model_config_cls(**raw.get("model", {}))
     train_cfg = TrainingConfig(**raw.get("training", {}))
     return raw, model_cfg, train_cfg
 

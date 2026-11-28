@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import torch
 from torch import nn
 
-from toygpt.models.layers import TransformerBlock
+from lmlab.layers.toygpt_transformer_block import TransformerBlock
 
 
 @dataclass

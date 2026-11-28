@@ -1,6 +1,6 @@
 """Train ToyGPT from a config file.
 
-    python experiments/train_gpt.py --config configs/gpt_baseline.yaml
+    python experiments/toygpt/train.py --config configs/toygpt/baseline.yaml
 
 Outputs go to runs/<name>/ (best.pt + config.yaml).
 """
@@ -9,14 +9,14 @@ from pathlib import Path
 
 import torch
 
-from toygpt.config import load_config, save_config
-from toygpt.data import load_wikitext, build_lm_datasets
-from toygpt.inference import generate
-from toygpt.models import ToyGPT
-from toygpt.tokenization import BPETokenizer
-from toygpt.training import train
+from lmlab.config import load_config, save_config
+from lmlab.data import load_wikitext, build_lm_datasets
+from lmlab.inference import generate
+from lmlab.models.toygpt import GPTConfig, ToyGPT
+from lmlab.tokenization import BPETokenizer
+from lmlab.training import train
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def build_tokenizer(raw, train_corpus, out_dir):
@@ -38,7 +38,7 @@ def main():
     parser.add_argument("--config", required=True)
     args = parser.parse_args()
 
-    raw, model_cfg, train_cfg = load_config(args.config)
+    raw, model_cfg, train_cfg = load_config(args.config, GPTConfig)
     run_name = raw.get("name", Path(args.config).stem)
     train_cfg.out_dir = str(PROJECT_ROOT / "runs" / run_name)
 

@@ -3,9 +3,9 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "toygpt"
+name = "lmlab"
 version = "0.1.0"
-description = "From-scratch language model playground"
+description = "From-scratch lab for building language models and replicating LLM/ML research"
 requires-python = ">=3.10"
 dependencies = [
     "torch",

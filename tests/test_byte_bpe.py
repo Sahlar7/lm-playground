@@ -1,7 +1,7 @@
 """Run with: python -m pytest tests/"""
 import pytest
 
-from toygpt.tokenization.bpe import BPETokenizer, BYTE_CHARACTERS, pretokenize
+from lmlab.tokenization.byte_bpe import BPETokenizer, BYTE_CHARACTERS, pretokenize
 
 CORPUS = [
     " = Valkyria Chronicles III = \n",
